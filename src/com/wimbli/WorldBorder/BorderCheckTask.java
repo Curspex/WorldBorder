@@ -25,12 +25,8 @@ public class BorderCheckTask implements Runnable
 		if (Config.KnockBack() == 0.0)
 			return;
 
-		Player[] players = Bukkit.getServer().getOnlinePlayers();
-
-		for (int i = 0; i < players.length; i++)
-		{
-			checkPlayer(players[i], null, false, true);
-		}
+		for (Player player : Bukkit.getOnlinePlayers())
+			checkPlayer(player, null, false, true);
 	}
 
 	// track players who are being handled (moved back inside the border) already; needed since Bukkit is sometimes sending teleport events with the old (now incorrect) location still indicated, which can lead to a loop when we then teleport them thinking they're outside the border, triggering event again, etc.

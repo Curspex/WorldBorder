@@ -31,9 +31,6 @@ public class WorldBorder extends JavaPlugin
 			enableBlockPlaceListener(true);
 		}
 
-		// integrate with DynMap if it's available
-		DynMapFeatures.setup();
-
 		// Well I for one find this info useful, so...
 		Location spawn = getServer().getWorlds().get(0).getSpawnLocation();
 		Config.log("For reference, the main world's spawn location is at X: " + Config.coord.format(spawn.getX()) + " Y: " + Config.coord.format(spawn.getY()) + " Z: " + Config.coord.format(spawn.getZ()));
@@ -42,7 +39,6 @@ public class WorldBorder extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		DynMapFeatures.removeAllBorders();
 		Config.StopBorderTimer();
 		Config.StoreFillTask();
 		Config.StopFillTask();

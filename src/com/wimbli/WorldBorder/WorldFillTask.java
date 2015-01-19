@@ -123,7 +123,8 @@ public class WorldFillTask implements Runnable
 
 	public void setTaskID(int ID)
 	{	
-		if (ID == -1) this.stop();
+		if (ID == -1)
+			this.stop();
 		this.taskID = ID;
 	}
 
@@ -340,6 +341,7 @@ public class WorldFillTask implements Runnable
 			if (!originalChunks.contains(coord))
 				world.unloadChunkRequest(coord.x, coord.z);
 		}
+		
 	}
 
 	// is this task still valid/workable?

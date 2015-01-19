@@ -48,8 +48,6 @@ public class WBCommand implements CommandExecutor
 		//-----
 		addCmd(new CmdPreventPlace());	// 1
 		addCmd(new CmdDelay());			// 1
-		addCmd(new CmdDynmap());		// 1
-		addCmd(new CmdDynmapmsg());		// 1
 		addCmd(new CmdRemount());		// 1
 		addCmd(new CmdFillautosave());	// 1
 		addCmd(new CmdPortal());		// 1
@@ -204,7 +202,7 @@ public class WBCommand implements CommandExecutor
 	public Set<String> getCommandNames()
 	{
 		// using TreeSet to sort alphabetically
-		Set<String> commands = new TreeSet(subCommands.keySet());
+		Set<String> commands = new TreeSet<String>(subCommands.keySet());
 		// removing default "commands" command as it's not normally shown or run like other commands
 		commands.remove("commands");
 		return commands;
