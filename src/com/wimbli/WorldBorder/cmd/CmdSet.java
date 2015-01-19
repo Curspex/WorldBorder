@@ -30,6 +30,7 @@ public class CmdSet extends WBCmd
 			"radiusX value will be used for both. The <x> and <z> coordinates can be decimal values (ex. 1.234).";
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(CommandSender sender, Player player, List<String> params, String worldName)
 	{

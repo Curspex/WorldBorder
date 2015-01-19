@@ -301,6 +301,7 @@ public class BorderData
 	));
 
 	// check if a particular spot consists of 2 breathable blocks over something relatively solid
+	@SuppressWarnings("deprecation")
 	private boolean isSafeSpot(World world, int X, int Y, int Z, boolean flying)
 	{
 		boolean safe = safeOpenBlocks.contains((Integer)world.getBlockTypeIdAt(X, Y, Z))		// target block open and safe
