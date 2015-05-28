@@ -6,7 +6,10 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import org.bukkit.Chunk;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
 
@@ -23,7 +26,7 @@ public class WorldFillTask implements Runnable
 	private transient boolean pausedForMemory = false;
 	private transient int taskID = -1;
 	private transient Player notifyPlayer = null;
-	private transient int chunksPerRun = 1;
+	private transient int chunksPerRun = 3;
 	private transient boolean continueNotice = false;
 	private transient boolean forceLoad = false;
 	
@@ -170,7 +173,7 @@ public class WorldFillTask implements Runnable
 				reportProgress();
 
 			// if this iteration has been running for 45ms (almost 1 tick) or more, stop to take a breather
-			if (now > loopStartTime + 45)
+			if (now > loopStartTime + 100)
 			{
 				readyToGo = true;
 				return;
@@ -184,7 +187,7 @@ public class WorldFillTask implements Runnable
 			}
 			insideBorder = true;
 
-			if (!forceLoad)
+			/*if (!forceLoad)
 			{
 				// skip past any chunks which are confirmed as fully generated using our super-special isChunkFullyGenerated routine
 				while (worldData.isChunkFullyGenerated(x, z))
@@ -193,11 +196,27 @@ public class WorldFillTask implements Runnable
 					if (!moveToNext())
 						return;
 				}
-			}
+			}*/
 
 			// load the target chunk and generate it if necessary
 			world.loadChunk(x, z, true);
 			worldData.chunkExistsNow(x, z);
+			
+			
+			Chunk chunk = world.getChunkAt(x, z);
+			for (int coordX = 0; coordX <= 15; coordX++)
+			for (int coordY = 1; coordY <= 4; coordY++)
+			for (int coordZ = 0; coordZ <= 15; coordZ++)
+			{
+
+				Block block = chunk.getBlock(coordX, coordY, coordZ);
+				if (block.getType().equals(Material.BEDROCK))
+				{
+					block.setType(Material.STONE);
+				}
+
+			}
+			
 
 			// There need to be enough nearby chunks loaded to make the server populate a chunk with trees, snow, etc.
 			// So, we keep the last few chunks loaded, and need to also temporarily load an extra inside chunk (neighbor closest to center of map)
@@ -314,7 +333,7 @@ public class WorldFillTask implements Runnable
 		reportProgress();
 		world.save();
 		sendMessage("task successfully completed for world \"" + refWorld() + "\"!");
-		this.stop();
+		this.stop(true);
 	}
 
 	// for cancelling prematurely
@@ -341,6 +360,27 @@ public class WorldFillTask implements Runnable
 			if (!originalChunks.contains(coord))
 				world.unloadChunkRequest(coord.x, coord.z);
 		}
+		
+	}
+	private void stop(boolean end)
+	{
+		if (server == null)
+			return;
+
+		readyToGo = false;
+		if (taskID != -1)
+			server.getScheduler().cancelTask(taskID);
+		server = null;
+
+		// go ahead and unload any chunks we still have loaded
+		while(!storedChunks.isEmpty())
+		{
+			CoordXZ coord = storedChunks.remove(0);
+			if (!originalChunks.contains(coord))
+				world.unloadChunkRequest(coord.x, coord.z);
+		}
+		
+		Bukkit.getServer().shutdown();
 		
 	}
 
